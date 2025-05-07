@@ -18,7 +18,9 @@ import {
   Gauge, 
   Thermometer, 
   Calendar, 
-  Loader2 
+  Loader2,
+  Sun,
+  CloudSun
 } from "lucide-react";
 
 interface WeatherDetailProps {

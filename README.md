@@ -18,11 +18,11 @@ CSS3
 
 JavaScript (ES6+)
 
-React.js (if applicable)
+React.js
 
 Backend:
 
-Node.js with Express.js (if applicable)
+Node.js with Express.js 
 
 APIs:
 

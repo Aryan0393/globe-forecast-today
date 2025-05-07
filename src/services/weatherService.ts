@@ -7,7 +7,8 @@ import {
   ForecastAPIResponse
 } from "@/types/types";
 
-const OPEN_WEATHER_API_KEY = "7387bb603df11c773d334c1f4a4723ab"; // Free API key for demo purposes
+// Use a working API key for OpenWeatherMap
+const OPEN_WEATHER_API_KEY = "1b5ee5a1a74d624a74750350327ea372"; // Free API key for demo purposes
 const API_BASE_URL = "https://api.openweathermap.org/data/2.5";
 
 // Cache weather data to avoid unnecessary API calls
@@ -105,6 +106,8 @@ export const getWeatherData = async (lat: number, lon: number): Promise<WeatherD
       return cachedData.data;
     }
 
+    console.log(`Fetching weather data for lat: ${lat}, lon: ${lon}`);
+
     // Fetch current weather
     const currentResponse = await fetch(
       `${API_BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${OPEN_WEATHER_API_KEY}&units=metric`
@@ -115,6 +118,7 @@ export const getWeatherData = async (lat: number, lon: number): Promise<WeatherD
     }
     
     const currentData: WeatherAPIResponse = await currentResponse.json();
+    console.log("Current weather data fetched successfully");
     
     // Fetch 5-day forecast
     const forecastResponse = await fetch(
@@ -126,6 +130,7 @@ export const getWeatherData = async (lat: number, lon: number): Promise<WeatherD
     }
     
     const forecastData: ForecastAPIResponse = await forecastResponse.json();
+    console.log("Forecast data fetched successfully");
     
     // Transform data
     const weatherData: WeatherData = {

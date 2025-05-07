@@ -166,9 +166,9 @@ export const getWeatherBackgroundClass = (condition: string): string => {
   return 'bg-cloudy'; // Default background
 };
 
-// Format temperature
+// Format temperature with exactly 2 decimal places
 export const formatTemperature = (temp: number): string => {
-  return `${Math.round(temp)}°C`;
+  return `${temp.toFixed(2)}°C`;
 };
 
 // Format date

@@ -26,16 +26,17 @@ const transformRecordToCity = (record: Record): City => {
   };
 };
 
-// Fetch cities with pagination and search
+// Fetch cities with pagination, search and country filter
 export const fetchCities = async (
   start: number = 0,
   rows: number = 20,
   searchQuery: string = "",
   sortBy: string = "name",
-  sortOrder: string = "asc"
+  sortOrder: string = "asc",
+  country: string = ""
 ): Promise<{ cities: City[]; total: number }> => {
   try {
-    const cacheKey = `${start}-${rows}-${searchQuery}-${sortBy}-${sortOrder}`;
+    const cacheKey = `${start}-${rows}-${searchQuery}-${sortBy}-${sortOrder}-${country}`;
     const cached = citiesCache.get(cacheKey);
     
     if (cached) {
@@ -51,8 +52,14 @@ export const fetchCities = async (
       timezone: "UTC"
     });
 
+    // Add search query if provided
     if (searchQuery) {
       params.append("q", searchQuery);
+    }
+    
+    // Add country filter if provided
+    if (country) {
+      params.append("refine.cou_name_en", country);
     }
 
     const response = await fetch(`${API_BASE_URL}?${params.toString()}`);
@@ -75,20 +82,20 @@ export const fetchCities = async (
 };
 
 // Search cities by name or country
-export const searchCities = async (query: string): Promise<City[]> => {
+export const searchCities = async (query: string, country: string = ""): Promise<City[]> => {
   if (!query || query.length < 2) {
     return [];
   }
   
   try {
-    const cacheKey = `search-${query}`;
+    const cacheKey = `search-${query}-${country}`;
     const cached = citiesCache.get(cacheKey);
     
     if (cached) {
       return cached;
     }
 
-    const { cities } = await fetchCities(0, 10, query);
+    const { cities } = await fetchCities(0, 10, query, "name", "asc", country);
     
     // Cache the results
     citiesCache.set(cacheKey, cities);

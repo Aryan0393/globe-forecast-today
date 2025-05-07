@@ -36,6 +36,7 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
   const [hasMore, setHasMore] = useState(true);
   const [sort, setSort] = useState<SortState>({ column: "name", direction: "asc" });
   const [filters, setFilters] = useState<FilterState>({});
+  const [countryFilter, setCountryFilter] = useState<string>("India");
   const observer = useRef<IntersectionObserver | null>(null);
   const lastCityElementRef = useRef<HTMLTableRowElement | null>(null);
   const { toast } = useToast();
@@ -45,7 +46,7 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
   // Load initial data
   useEffect(() => {
     loadCities();
-  }, []);
+  }, [countryFilter]); // Re-load when country filter changes
 
   // Load more cities when scroll reaches bottom
   useEffect(() => {
@@ -152,7 +153,8 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
         ROWS_PER_PAGE,
         searchQuery,
         sort.column || "name",
-        sort.direction
+        sort.direction,
+        countryFilter // Add country filter
       );
       
       setCities(newCities);
@@ -160,6 +162,13 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
       setTotalCities(total);
       setPage(1);
       setHasMore(newCities.length < total);
+      
+      if (newCities.length === 0) {
+        toast({
+          title: "No cities found",
+          description: `No cities found for the current filters. Try adjusting your search.`,
+        });
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -184,7 +193,8 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
         ROWS_PER_PAGE,
         searchQuery,
         sort.column || "name",
-        sort.direction
+        sort.direction,
+        countryFilter // Add country filter
       );
       
       setCities(prevCities => [...prevCities, ...newCities]);
@@ -216,7 +226,8 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
           ROWS_PER_PAGE,
           query,
           sort.column || "name",
-          sort.direction
+          sort.direction,
+          countryFilter // Add country filter
         );
         
         setCities(newCities);
@@ -254,13 +265,13 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
   return (
     <Card className="w-full overflow-hidden">
       <div className="p-4 bg-primary/10">
-        <h2 className="text-2xl font-semibold mb-4">Cities</h2>
+        <h2 className="text-2xl font-semibold mb-4">Indian Cities</h2>
         <div className="flex flex-col md:flex-row gap-4 mb-4 items-end">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <Input
               className="pl-10 pr-4"
-              placeholder="Search cities..."
+              placeholder="Search Indian cities..."
               value={searchQuery}
               onChange={handleSearch}
             />
@@ -281,12 +292,6 @@ const CitiesTable: React.FC<CitiesTableProps> = ({ onCitySelect }) => {
             placeholder="Filter by name"
             value={filters.name || ""}
             onChange={(e) => handleFilterChange("name", e.target.value)}
-            className="text-sm"
-          />
-          <Input
-            placeholder="Filter by country"
-            value={filters.country || ""}
-            onChange={(e) => handleFilterChange("country", e.target.value)}
             className="text-sm"
           />
           <Input

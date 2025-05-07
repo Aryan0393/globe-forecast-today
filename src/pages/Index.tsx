@@ -17,6 +17,7 @@ const Index: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const countryFilter = "India"; // Set default country filter to India
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +38,7 @@ const Index: React.FC = () => {
     
     try {
       setIsSearching(true);
-      const results = await searchCities(searchQuery);
+      const results = await searchCities(searchQuery, countryFilter); // Pass country filter
       setSearchResults(results);
       
       if (results.length === 0) {
@@ -94,14 +95,14 @@ const Index: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <Cloud className="mr-2" size={28} />
-              <h1 className="text-2xl md:text-3xl font-bold">Weather Forecast App</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Indian Cities Weather App</h1>
             </div>
             <form onSubmit={handleSearch} className="w-full md:w-96 relative">
               <Input
                 ref={searchInputRef}
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder="Search for a city..."
+                placeholder="Search for a city in India..."
                 className="pl-10 pr-4 py-2 w-full bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70" size={18} />
@@ -131,7 +132,7 @@ const Index: React.FC = () => {
         <div className="space-y-8">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold">Cities</h2>
+              <h2 className="text-2xl font-semibold">Indian Cities</h2>
               <Button
                 variant="outline"
                 onClick={() => {
@@ -141,7 +142,7 @@ const Index: React.FC = () => {
                 }}
               >
                 <Search className="mr-2" size={16} />
-                Find a city
+                Find a city in India
               </Button>
             </div>
             <CitiesTable onCitySelect={handleCitySelect} />
